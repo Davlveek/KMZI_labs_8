@@ -1,3 +1,9 @@
+from sympy import randprime, gcd
+
+lower_border = pow(2, 511)
+upper_border = pow(2, 512)
+
+
 class RSA:
     @staticmethod
     def encrypt(m, e, n):
@@ -6,3 +12,23 @@ class RSA:
     @staticmethod
     def decrypt(c, d, n):
         return pow(c, d, n)
+
+    @staticmethod
+    def generate_exp(p, q):
+        euler_func = (p - 1) * (q - 1)
+        for e in range(1000, euler_func - 1):
+            if gcd(e, euler_func) == 1:
+                return e, euler_func
+
+    @staticmethod
+    def mult_inv(e, euler_func):
+        return pow(e, -1, euler_func)
+
+    @staticmethod
+    def generate_params():
+        p = randprime(lower_border, upper_border)
+        q = randprime(lower_border, upper_border)
+        n = p * q
+        e, euler_func = RSA.generate_exp(p, q)
+        d = RSA.mult_inv(e, euler_func)
+        return e, d, n
