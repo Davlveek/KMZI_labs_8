@@ -1,7 +1,14 @@
 from sympy import randprime, gcd
+from Crypto.Hash import SHA256
 
 lower_border = pow(2, 511)
 upper_border = pow(2, 512)
+
+
+def sha256(m):
+    h = SHA256.new()
+    h.update(m)
+    return h.hexdigest()
 
 
 class RSA:
@@ -12,6 +19,17 @@ class RSA:
     @staticmethod
     def decrypt(c, d, n):
         return pow(c, d, n)
+
+    @staticmethod
+    def sign(m, d, n):
+        r = sha256(m)
+        return RSA.encrypt(int(r, 16), d, n)
+
+    @staticmethod
+    def sign_check(m, sign, e, n):
+        s = RSA.decrypt(sign, e, n)
+        r = sha256(m)
+        return True if int(r, 16) == s else False
 
     @staticmethod
     def generate_exp(p, q):
