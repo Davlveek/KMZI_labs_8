@@ -3,7 +3,7 @@ import asn1
 
 class ASNCoder:
     @staticmethod
-    def encode(n, e, key, ciphertext):
+    def encode_rsa(n, e, key, ciphertext):
         encoder = asn1.Encoder()
         encoder.start()
 
@@ -23,7 +23,7 @@ class ASNCoder:
         # AES encrypted key
         encoder.enter(asn1.Numbers.Sequence)  # Sequence 4
         encoder.write(key, asn1.Numbers.Integer)
-        encoder.leave()
+        encoder.leave()  # End sequence 4
 
         encoder.leave()  # End sequence 2
         encoder.leave()  # End set
@@ -39,6 +39,63 @@ class ASNCoder:
         encoder.write(ciphertext)
 
         return encoder.output()
+
+    @staticmethod
+    def decode_rsa(filename):
+        with open(filename, 'rb') as file:
+            data = file.read()
+            decoder = asn1.Decoder()
+            decoder.start(data)
+            ints = []
+            ints = ASNCoder.asn_parse(decoder, ints)
+            ciphertext = data[-ints[-1]:]  # Get ciphertext length and slice data
+            return ints[0], ints[1], ints[2], ciphertext
+
+    @staticmethod
+    def encode_rsa_sign(sign, e, n):
+        encoder = asn1.Encoder()
+        encoder.start()
+
+        encoder.enter(asn1.Numbers.Sequence)  # Sequence 1
+
+        encoder.enter(asn1.Numbers.Set)  # Set 1
+        encoder.enter(asn1.Numbers.Sequence)  # Sequence 2
+
+        encoder.write(b'\x00\x40', asn1.Numbers.OctetString)  # RSA-SHA256
+        encoder.write(b'\x0C\x00', asn1.Numbers.UTF8String)
+
+        # RSA sign params
+        encoder.enter(asn1.Numbers.Sequence)  # Sequence 3
+        encoder.write(n, asn1.Numbers.Integer)
+        encoder.write(e, asn1.Numbers.Integer)
+        encoder.leave()  # End sequence 3
+
+        encoder.enter(asn1.Numbers.Sequence)  # Sequence 4
+        encoder.leave()  # End sequence 4
+
+        encoder.enter(asn1.Numbers.Sequence)  # Sequence 5
+        encoder.write(sign, asn1.Numbers.Integer)
+        encoder.leave()  # End sequence 5
+
+        encoder.leave()  # End sequence 2
+        encoder.leave()  # End set 1
+
+        encoder.enter(asn1.Numbers.Sequence)  # Sequence 6
+        encoder.leave()  # End sequence 6
+
+        encoder.leave()  # End Sequence 1
+
+        return encoder.output()
+
+    @staticmethod
+    def decode_rsa_sign(sing_filename):
+        with open(sing_filename, 'rb') as sign_file:
+            data = sign_file.read()
+            decoder = asn1.Decoder()
+            decoder.start(data)
+            ints = []
+            ints = ASNCoder.asn_parse(decoder, ints)
+            return ints[0], ints[1], ints[2]
 
     @staticmethod
     def asn_parse(decoder, ints):
@@ -60,14 +117,3 @@ class ASNCoder:
                 break
 
         return ints
-
-    @staticmethod
-    def decode(filename):
-        with open(filename, 'rb') as file:
-            data = file.read()
-            decoder = asn1.Decoder()
-            decoder.start(data)
-            ints = []
-            ints = ASNCoder.asn_parse(decoder, ints)
-            ciphertext = data[-ints[-1]:]  # Get ciphertext length and slice data
-            return ints[0], ints[1], ints[2], ciphertext
