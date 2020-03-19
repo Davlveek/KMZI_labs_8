@@ -1,14 +1,8 @@
 from sympy import randprime, gcd
-from Crypto.Hash import SHA256
+from crypto.hash import sha256
 
 lower_border = pow(2, 511)
 upper_border = pow(2, 512)
-
-
-def sha256(m):
-    h = SHA256.new()
-    h.update(m)
-    return h.hexdigest()
 
 
 class RSA:
