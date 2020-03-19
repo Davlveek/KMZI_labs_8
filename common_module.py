@@ -1,40 +1,46 @@
+import random
+from sympy import gcd
 from crypto.rsa import RSA
 
 
 def find_fs(N):
     f = 0
     while N % 2 == 0:
-        N = N / 2
+        N = N // 2
         f += 1
     return f, N
 
 
-def find_t(b, n):
+def find_t(b, mod):
     l = 0
-    while pow(b, pow(2, l)) % n != 1:
-        l = + 1
+    while pow(b, pow(2, l)) % mod != 1:
+        l += 1
+    if l == 0:
+        return None
     t = pow(b, pow(2, l - 1))
-    return None if t % n == -1 else t
+    return None if t % mod == -1 else t
 
 
-def generate():
-    n, p, q = RSA.generate_module()
-
+def find_privkey(exp_a, exp_b, priv_b, mod):
+    N = exp_b * priv_b - 1
+    f, s = find_fs(N)
     while True:
-        # Generate A params
-        e_a, euler_func = RSA.generate_exp(p, q)
-        d_a = RSA.mult_inv(e_a, euler_func)
+        a = random.randint(0, mod - 1)
+        b = pow(a, s, mod)
+        t = find_t(b, mod)
+        if t:
+            break
 
-        # Generate B params
-        e_b, euler_func = RSA.generate_exp(p, q)
-        d_b = RSA.mult_inv(e_b, euler_func)
+    p = gcd(t + 1, mod)
+    q = gcd(t - 1, mod)
+    euler_func = (p - 1) * (q - 1)
 
-        if e_b != e_a and d_b != d_a:
-            return n, e_a, d_a, e_b, d_b
+    priv_a = RSA.mult_inv(exp_a, int(euler_func))
+    print(f'Privkey = {priv_a}')
 
 
 if __name__ == '__main__':
-    n, e_a, d_a, e_b, d_b = generate()
+    n, e_a, d_a, e_b, d_b = RSA.generate_one_module_params()
 
     print(f'n = {n}')
     print('A params:')
@@ -42,15 +48,4 @@ if __name__ == '__main__':
     print('B params:')
     print(f'e = {e_b}\nd = {d_b}')
 
-    #N = e * d - 1
-    #f, s = find_fs(N)
-    #while True:
-    #    a = random.randint(0, n - 1)
-    #    b = pow(a, s, n)
-    #    t = find_t(b, n)
-    #    if t:
-    #        break
-    #
-    #p = gcd(t + 1, n)
-    #q = gcd(t - 1, n)
-    #euler_func = (p - 1) * (q - 1)
+    find_privkey(e_a, e_b, d_b, n)
