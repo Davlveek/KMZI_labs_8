@@ -1,6 +1,7 @@
 /.idea/
 venv
-/lab_1/test
-/lab_1/test.asn1
-/lab_1/test.asn1.dec
-/lab_1/test.sign.asn1
+/test
+/test.asn1
+/test.asn1.dec
+/test.sign.asn1
+

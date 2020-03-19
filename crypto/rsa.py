@@ -43,10 +43,14 @@ class RSA:
         return pow(e, -1, euler_func)
 
     @staticmethod
-    def generate_params():
+    def generate_module():
         p = randprime(lower_border, upper_border)
         q = randprime(lower_border, upper_border)
-        n = p * q
+        return p * q, p, q
+
+    @staticmethod
+    def generate_params():
+        n, p, q = RSA.generate_module()
         e, euler_func = RSA.generate_exp(p, q)
         d = RSA.mult_inv(e, euler_func)
         return e, d, n

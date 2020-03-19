@@ -1,5 +1,3 @@
-import os
-
 from aes import AESCipher, AES_KEY_SIZE
 from rsa import RSA
 from asn import ASNCoder
@@ -55,10 +53,6 @@ def form_sign(filename):
 def check_sign(filename):
     with open(filename, 'rb') as file:
         data = file.read()
-
-    if not os.path.exists(f'{filename}.sign.asn1'):
-        print('File with sign not exist in current directory')
-        return
 
     n, e, sign = ASNCoder.decode_rsa_sign(f'{filename}.sign.asn1')
 
