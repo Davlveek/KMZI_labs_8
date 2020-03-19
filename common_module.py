@@ -1,6 +1,4 @@
-import random
-
-from lab_1.rsa import RSA
+from crypto.rsa import RSA
 
 def find_fs(N):
     f = 0

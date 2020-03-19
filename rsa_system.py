@@ -1,7 +1,7 @@
-from aes import AESCipher, AES_KEY_SIZE
-from rsa import RSA
+from crypto.aes import AESCipher, AES_KEY_SIZE
+from crypto.rsa import RSA
 from asn import ASNCoder
-from parse import parse_arguments
+from parsing.rsa_sys_parse import parse_arguments
 from privkey import *
 
 PRIVKEY_FILE = 'privkey.py'
