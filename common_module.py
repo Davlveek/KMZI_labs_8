@@ -1,5 +1,6 @@
 from crypto.rsa import RSA
 
+
 def find_fs(N):
     f = 0
     while N % 2 == 0:
