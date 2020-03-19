@@ -1,14 +1,8 @@
 from sympy import randprime, gcd
-from Crypto.Hash import SHA256
+from crypto.hash import sha256
 
 lower_border = pow(2, 511)
 upper_border = pow(2, 512)
-
-
-def sha256(m):
-    h = SHA256.new()
-    h.update(m)
-    return h.hexdigest()
 
 
 class RSA:
@@ -54,3 +48,24 @@ class RSA:
         e, euler_func = RSA.generate_exp(p, q)
         d = RSA.mult_inv(e, euler_func)
         return e, d, n
+
+    @staticmethod
+    def generate_one_module_params():
+        n, p, q = RSA.generate_module()
+
+        euler_func = (p - 1) * (q - 1)
+        a_find = False
+        e_a = e_b = 0
+        for e in range(1000, euler_func - 1):
+            if gcd(e, euler_func) == 1:
+                if a_find:
+                    e_b = e
+                    break
+                else:
+                    e_a = e
+                    a_find = True
+
+        d_a = RSA.mult_inv(e_a, euler_func)
+        d_b = RSA.mult_inv(e_b, euler_func)
+
+        return n, e_a, d_a, e_b, d_b
