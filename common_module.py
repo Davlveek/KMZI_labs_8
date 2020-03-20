@@ -1,6 +1,7 @@
 import random
 from sympy import gcd
 from crypto.rsa import RSA
+from vuln_params import generate_one_module_params
 
 
 def find_fs(N):
@@ -40,7 +41,7 @@ def find_privkey(exp_a, exp_b, priv_b, mod):
 
 
 if __name__ == '__main__':
-    n, e_a, d_a, e_b, d_b = RSA.generate_one_module_params()
+    n, e_a, d_a, e_b, d_b = generate_one_module_params()
 
     print(f'n = {n}')
     print('A params:')

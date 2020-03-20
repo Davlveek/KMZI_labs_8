@@ -1,5 +1,5 @@
 import math
-from crypto.rsa import RSA
+from vuln_params import generate_wieners_params
 
 
 def get_continued_fraction(exp, mod, l):
@@ -35,7 +35,7 @@ def find_privkey(exp, mod):
 
 
 if __name__ == '__main__':
-    e, d, n = RSA.generate_wieners_params()
+    e, d, n = generate_wieners_params()
     print(f'n = {n}\ne = {e}\nd = {d}\n')
     if e != 0:
         find_privkey(e, n)
