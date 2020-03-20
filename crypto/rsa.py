@@ -1,3 +1,4 @@
+import math
 from sympy import randprime, gcd
 from crypto.hash import sha256
 
@@ -69,3 +70,20 @@ class RSA:
         d_b = RSA.mult_inv(e_b, euler_func)
 
         return n, e_a, d_a, e_b, d_b
+
+    @staticmethod
+    def generate_wieners_params():
+        while True:
+            p = randprime(lower_border, upper_border)
+            q = randprime(lower_border, upper_border)
+            if q < p < 2 * q:
+                break
+        n = p * q
+        euler_func = (p - 1) * (q - 1)
+
+        d = randprime(pow(2, 127), pow(2, 128))
+        e = RSA.mult_inv(d, euler_func)
+        if gcd(e, euler_func) == 1:
+            return e, d, n
+        else:
+            return 0, 0, 0
