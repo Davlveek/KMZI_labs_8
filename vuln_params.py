@@ -37,3 +37,25 @@ def generate_wieners_params():
         return e, d, n
     else:
         return 0, 0, 0
+
+
+def check_small_order(e, n):
+    for i in range(1, 100):
+        if pow(e, i, n) == 1:
+            return True
+    return False
+
+
+def generate_small_order_params():
+    n, p, q = RSA.generate_module()
+
+    euler_func = (p - 1) * (q - 1)
+    exp = 0
+    for e in range(1000, euler_func - 1):
+        if gcd(e, euler_func) == 1 and check_small_order(e, n):
+            exp = e
+            break
+
+    d = RSA.mult_inv(exp, euler_func)
+
+    return exp, d, n
