@@ -47,11 +47,13 @@ def check_small_order(e, n):
 
 
 def generate_small_order_params():
-    n, p, q = RSA.generate_module()
+    p = randprime(pow(2, 31), pow(2, 32))
+    q = randprime(pow(2, 31), pow(2, 32))
+    n = p * q
 
     euler_func = (p - 1) * (q - 1)
     exp = 0
-    for e in range(1000, euler_func - 1):
+    for e in range(2, euler_func - 1):
         if gcd(e, euler_func) == 1 and check_small_order(e, n):
             exp = e
             break
