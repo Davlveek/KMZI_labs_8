@@ -134,6 +134,14 @@ class ASNCoder:
             return ints[0], ints[1], ints[2]
 
     @staticmethod
+    def decode_dh_client(data):
+        decoder = asn1.Decoder()
+        decoder.start(data)
+        ints = []
+        ints = ASNCoder.asn_parse(decoder, ints)
+        return ints[0], ints[1], ints[2]
+
+    @staticmethod
     def asn_parse(decoder, ints):
         while not decoder.eof():
             try:
