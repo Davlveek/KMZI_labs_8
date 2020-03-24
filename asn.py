@@ -3,6 +3,42 @@ import asn1
 
 class ASNCoder:
     @staticmethod
+    def encode_dh_client(A, g, p):
+        encoder = asn1.Encoder()
+        encoder.start()
+
+        encoder.enter(asn1.Numbers.Sequence)
+        encoder.enter(asn1.Numbers.Set)
+        encoder.enter(asn1.Numbers.Sequence)
+
+        encoder.write(b'\x00\x21', asn1.Numbers.OctetString)  # DH identifeier
+        encoder.write(b'dh', asn1.Numbers.UTF8String)
+
+        encoder.enter(asn1.Numbers.Sequence)
+        encoder.leave()
+
+        # Cryptosystem params
+        encoder.enter(asn1.Numbers.Sequence)
+        encoder.write(p, asn1.Numbers.Integer)
+        encoder.write(g, asn1.Numbers.Integer)
+        encoder.leave()
+
+        # Ciphertext (A param)
+        encoder.enter(asn1.Numbers.Sequence)
+        encoder.write(A, asn1.Numbers.Integer)
+        encoder.leave()
+
+        encoder.leave()
+        encoder.leave()
+
+        encoder.enter(asn1.Numbers.Sequence)
+        encoder.leave()
+
+        encoder.leave()
+
+        return encoder.output()
+
+    @staticmethod
     def encode_rsa(n, e, key, ciphertext):
         encoder = asn1.Encoder()
         encoder.start()
@@ -96,6 +132,14 @@ class ASNCoder:
             ints = []
             ints = ASNCoder.asn_parse(decoder, ints)
             return ints[0], ints[1], ints[2]
+
+    @staticmethod
+    def decode_dh_client(data):
+        decoder = asn1.Decoder()
+        decoder.start(data)
+        ints = []
+        ints = ASNCoder.asn_parse(decoder, ints)
+        return ints[0], ints[1], ints[2]
 
     @staticmethod
     def asn_parse(decoder, ints):

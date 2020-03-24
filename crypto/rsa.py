@@ -1,4 +1,3 @@
-import math
 from sympy import randprime, gcd
 from crypto.hash import sha256
 
