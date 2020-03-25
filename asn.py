@@ -3,6 +3,59 @@ import asn1
 
 class ASNCoder:
     @staticmethod
+    def encode_dh_msg(ciphertext):
+        encoder = asn1.Encoder()
+        encoder.start()
+
+        encoder.enter(asn1.Numbers.Sequence)
+
+        encoder.enter(asn1.Numbers.Set)
+        encoder.leave()
+
+        encoder.enter(asn1.Numbers.Sequence)
+        encoder.write(b'\x10\x82', asn1.Numbers.OctetString)  # AES identifier
+        encoder.write(len(ciphertext), asn1.Numbers.Integer)
+        encoder.leave()
+
+        encoder.leave()
+
+        encoder.write(ciphertext)
+
+        return encoder.output()
+
+    @staticmethod
+    def encode_dh_server(B):
+        encoder = asn1.Encoder()
+        encoder.start()
+
+        encoder.enter(asn1.Numbers.Sequence)
+        encoder.enter(asn1.Numbers.Set)
+        encoder.enter(asn1.Numbers.Sequence)
+
+        encoder.write(b'\x00\x21', asn1.Numbers.OctetString)  # DH identifeier
+        encoder.write(b'dh', asn1.Numbers.UTF8String)
+
+        encoder.enter(asn1.Numbers.Sequence)
+        encoder.leave()
+
+        encoder.enter(asn1.Numbers.Sequence)
+        encoder.leave()
+
+        encoder.enter(asn1.Numbers.Sequence)
+        encoder.write(B, asn1.Numbers.Integer)
+        encoder.leave()
+
+        encoder.leave()
+        encoder.leave()
+
+        encoder.enter(asn1.Numbers.Sequence)
+        encoder.leave()
+
+        encoder.leave()
+
+        return encoder.output()
+
+    @staticmethod
     def encode_dh_client(A, g, p):
         encoder = asn1.Encoder()
         encoder.start()
@@ -140,6 +193,22 @@ class ASNCoder:
         ints = []
         ints = ASNCoder.asn_parse(decoder, ints)
         return ints[0], ints[1], ints[2]
+
+    @staticmethod
+    def decode_dh_server(data):
+        decoder = asn1.Decoder()
+        decoder.start(data)
+        ints = []
+        ints = ASNCoder.asn_parse(decoder, ints)
+        return ints[0]
+
+    @staticmethod
+    def decode_dh_msg(data):
+        decoder = asn1.Decoder()
+        decoder.start(data)
+        ints = []
+        ints = ASNCoder.asn_parse(decoder, ints)
+        return data[-ints[0]:]
 
     @staticmethod
     def asn_parse(decoder, ints):
