@@ -13,8 +13,13 @@ class Client:
     def send(self, data):
         self.sock.send(data)
 
-    def recv(self):
-        pass
+    def recv(self, size):
+        data = self.sock.recv(size)
+        if not data:
+            print('Invalid data')
+            return None
+        else:
+            return data
 
     def close(self):
         self.sock.close()
