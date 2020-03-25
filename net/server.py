@@ -15,8 +15,8 @@ class Server:
         self.conn, addr = self.sock.accept()
         return addr
 
-    def send(self):
-        pass
+    def send(self, data):
+        self.conn.send(data)
 
     def recv(self, size):
         data = self.conn.recv(size)
