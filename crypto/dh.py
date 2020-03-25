@@ -19,8 +19,9 @@ class DH:
         p = randprime(lower_border, upper_border)
         g = randint(2, p - 1)
         a = randint(2, p - 1)
-        return p, g, pow(g, a, p)
+        return a, p, g, pow(g, a, p)
 
     @staticmethod
-    def generate_server_params():
-        pass
+    def generate_server_params(A, g, p):
+        b = randint(2, p - 1)
+        return pow(g, b, p), pow(A, b, p)
