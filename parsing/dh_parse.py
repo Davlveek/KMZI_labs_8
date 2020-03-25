@@ -13,6 +13,10 @@ def parse_client_arguments():
         type=int,
         help='Server port'
     )
+    parser.add_argument(
+        'file',
+        help='File for sending'
+    )
 
     return parser.parse_args()
 
