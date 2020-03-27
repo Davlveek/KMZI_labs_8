@@ -20,8 +20,12 @@ def encrypt(filename):
 
         e, d, n = RSA.generate_params()
         form_privkey_file(d)
-        encrypted_key = RSA.encrypt(int.from_bytes(key, 'big'), e, n)
+        key = int.from_bytes(key, 'big')
+        encrypted_key = RSA.encrypt(key, e, n)
         asn_encoded = ASNCoder.encode_rsa(n, e, encrypted_key, ciphertext)
+
+        print('Params')
+        print(f'n = {n}\ne = {e}\nd = {d}\nkey = {key}')
 
         with open(f'{filename}.asn1', 'wb') as asn_file:
             asn_file.write(asn_encoded)
