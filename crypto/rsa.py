@@ -1,8 +1,9 @@
-from sympy import randprime, gcd
+from sympy import randprime, gcd, isprime
 from crypto.hash import sha256
+from decimal import Decimal
 
-lower_border = pow(2, 511)
-upper_border = pow(2, 512)
+lower_border = pow(2, 1023)
+upper_border = pow(2, 1024)
 
 
 class RSA:
@@ -41,6 +42,20 @@ class RSA:
         p = randprime(lower_border, upper_border)
         q = randprime(lower_border, upper_border)
         return p * q, p, q
+
+    @staticmethod
+    def generate_normal_params():
+        while True:
+            n, p, q = RSA.generate_module()
+            e, euler_func = RSA.generate_exp(p, q)
+            d = RSA.mult_inv(e, euler_func)
+            if Decimal(d) < Decimal.__pow__(Decimal(n), Decimal(1/4)) / Decimal(3):
+                continue
+            if not isprime(Decimal(p - 1) / Decimal(2)):
+                continue
+            if not isprime(Decimal(q - 1) / Decimal(2)):
+                continue
+            return e, d, n
 
     @staticmethod
     def generate_params():
