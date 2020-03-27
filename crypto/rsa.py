@@ -28,7 +28,7 @@ class RSA:
     @staticmethod
     def generate_exp(p, q):
         euler_func = (p - 1) * (q - 1)
-        for e in range(1000, euler_func - 1):
+        for e in range(lower_border, upper_border):
             if gcd(e, euler_func) == 1:
                 return e, euler_func
 
