@@ -7,7 +7,7 @@ def generate_one_module_params():
     euler_func = (p - 1) * (q - 1)
     a_find = False
     e_a = e_b = 0
-    for e in range(1000, euler_func - 1):
+    for e in range(pow(2, 1023), euler_func - 1):
         if gcd(e, euler_func) == 1:
             if a_find:
                 e_b = e
