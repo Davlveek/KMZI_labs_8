@@ -26,8 +26,13 @@ def lenstra(n, m):
             return None, None
 
         i = 0
+
         curve = [a, b]
+        print(f'Curve: y^2 = x^3 + {a} * x + {b}')
+
         point = [x, y]
+        print(f'Point: x = {x}, y = {y}')
+
         Q = [x, y]
 
         while i < m:
@@ -80,6 +85,8 @@ def main():
 
         q = number // p
         print(f'{p} * {q} = {number}')
+        print(f'p len: {p.bit_length()}')
+        print(f'q len: {q.bit_length()}')
         print(f'{iterations} iterations')
         print(f'{end - start} worktime')
     else:
